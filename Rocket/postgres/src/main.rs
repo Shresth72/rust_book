@@ -2,30 +2,33 @@ use rocket::http::Status;
 use rocket::State;
 use sea_orm::*;
 
-// mod entities;
-// use entities::{prelude::*, *};
+mod entity;
+use entity::{prelude::*, *};
 
 #[macro_use]
 extern crate rocket;
 
-const POSTGRES_USER: &str = "rocket_db";
-const POSTGRES_DB: &str = "postgresdb";
-const PORT: &str = "5432";
+const POSTGRES_USER: &str = "539srijansiddharth";
+const POSTGRES_DB: &str = "neondb";
 
 #[get("/")]
-fn get_start(connection: &State<DatabaseConnection>) -> Result<&'static str, Status> {
-    Ok("Hello, world!")
+async fn get_start(connection: &State<DatabaseConnection>) -> Result<&'static str, Status> {
+    let connection = connection as &DatabaseConnection;
+    let _result = Post::find().all(connection).await;
+
+    Ok("Records retrieved!")
 }
 
 #[post("/start")]
-fn post_start(connection: &State<DatabaseConnection>) -> Result<&'static str, Status> {
+async fn post_start(connection: &State<DatabaseConnection>) -> Result<&'static str, Status> {
+    let connection = connection as &DatabaseConnection;
     let record = post::ActiveModel {
         title: Set("Title".to_owned()),
         text: Set("Some Text".to_owned()),
         ..Default::default()
     };
 
-    let result = Post::insert(record.clone()).exec(&**connection);
+    let _result = Post::insert(record.clone()).exec(connection).await;
 
     Ok("Record created!")
 }
@@ -33,9 +36,8 @@ fn post_start(connection: &State<DatabaseConnection>) -> Result<&'static str, St
 #[launch]
 async fn rocket() -> _ {
     let connection = match Database::connect(format!(
-        "postgres://{}:password@localhost:{}/{}",
+        "postgresql://{}:A2G3SlPMBHLo@ep-patient-feather-a189osl1.ap-southeast-1.aws.neon.tech/{}?sslmode=require",
         POSTGRES_USER,
-        PORT,
         POSTGRES_DB
     )).await {
         Ok(connection) => connection,
