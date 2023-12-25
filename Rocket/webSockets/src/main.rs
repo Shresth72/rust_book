@@ -1,6 +1,3 @@
-extern crate diesel;
-#[macro_use] extern crate rocket;
-
 use rocket::http::Status;
 use diesel::pg::PgConnection;
 use diesel::{
@@ -13,6 +10,9 @@ mod routes;
 mod schema;
 mod server;
 mod session;
+
+#[macro_use] extern crate rocket;
+extern crate diesel;
 
 #[get("/")]
 fn index() -> Result<&'static str, Status> {

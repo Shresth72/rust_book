@@ -1,6 +1,8 @@
 use rocket::http::Status;
 use rocket::State;
 use sea_orm::*;
+use std::env::var;
+use dotenv::dotenv;
 
 mod entity;
 use entity::{prelude::*, *};
@@ -35,9 +37,12 @@ async fn post_start(connection: &State<DatabaseConnection>) -> Result<&'static s
 
 #[launch]
 async fn rocket() -> _ {
+    dotenv().ok();
+
     let connection = match Database::connect(format!(
-        "postgresql://{}:A2G3SlPMBHLo@ep-patient-feather-a189osl1.ap-southeast-1.aws.neon.tech/{}?sslmode=require",
+        "postgresql://{}:{}@ep-patient-feather-a189osl1.ap-southeast-1.aws.neon.tech/{}?sslmode=require",
         POSTGRES_USER,
+        var("POSTGRES_PASSWORD").unwrap(),
         POSTGRES_DB
     )).await {
         Ok(connection) => connection,
