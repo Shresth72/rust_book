@@ -1,14 +1,10 @@
-use rocket::{http::Status, Shutdown};
-use rocket::tokio::sync::broadcast::{channel, Sender, Receiver, error::SendError};
+use rocket::{fs::{relative, FileServer}, Shutdown};
+use rocket::tokio::sync::broadcast::{channel, Sender, Receiver, error::{SendError, RecvError}};
 use rocket::{form::{FromForm, Form}, State, serde::{Serialize, Deserialize}};
-use rocket::response::stream::EventStream;
+use rocket::response::stream::{EventStream, Event};
+use rocket::tokio::select;
 
 #[macro_use] extern crate rocket;
-
-#[get("/")]
-fn index() -> Result<&'static str, Status> {
-    Ok("Hello, world!")
-}
 
 #[derive(Debug, Clone, FromForm, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
@@ -49,5 +45,6 @@ async fn events(queue: &State<Sender<Message>>, mut end: Shutdown) -> EventStrea
 fn rocket() -> _ {
     rocket::build()
         .manage(channel::<Message>(1024).0)
-        .mount("/", routes![index])
+        .mount("/", routes![post, events])
+        .mount("/", FileServer::from(relative!("/static")))
 }
