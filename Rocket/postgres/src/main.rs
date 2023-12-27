@@ -5,7 +5,10 @@ use std::env::var;
 use dotenv::dotenv;
 
 mod entity;
+mod models;
+
 use entity::{prelude::*, *};
+use models::object::Object;
 
 #[macro_use]
 extern crate rocket;
@@ -16,21 +19,21 @@ const POSTGRES_DB: &str = "neondb";
 #[get("/")]
 async fn get_start(connection: &State<DatabaseConnection>) -> Result<&'static str, Status> {
     let connection = connection as &DatabaseConnection;
-    let _result = Post::find().all(connection).await;
+    let _result = Post::find().all(connection).await.unwrap();
 
     Ok("Records retrieved!")
 }
 
-#[post("/start")]
-async fn post_start(connection: &State<DatabaseConnection>) -> Result<&'static str, Status> {
+#[post("/start", format = "application/json", data = "<object>")]
+async fn post_start(connection: &State<DatabaseConnection>, object: Object) -> Result<&'static str, Status> {
     let connection = connection as &DatabaseConnection;
     let record = post::ActiveModel {
-        title: Set("Title".to_owned()),
-        text: Set("Some Text".to_owned()),
+        title: Set(object.title.to_owned()),
+        text: Set(object.text.to_owned()),
         ..Default::default()
     };
 
-    let _result = Post::insert(record.clone()).exec(connection).await;
+    let _result = Post::insert(record.clone()).exec(connection).await.unwrap();
 
     Ok("Record created!")
 }

@@ -102,8 +102,8 @@ async fn get_latest_release (client: &State<Client>, repo: &str) -> Result<Value
     create_tauri_response(client, &github_release).await.ok_or(json!({})).or_else(|e| Ok(e))
 }
 
-#[get("/google-keep-desktop/<_platform>/<current_version>?<msg>")]
-async fn google_keep_desktop(_platform: String, current_version: String, msg: Option<String>, client: &State<Client>) -> Result<Value, Status> {
+#[get("/google-keep-desktop/<_platform>/<_current_version>?<msg>")]
+async fn google_keep_desktop(_platform: String, _current_version: String, msg: Option<String>, client: &State<Client>) -> Result<Value, Status> {
     // format!("Hello, {} year old named {}!", name, age)
     // Status::NoContent
 
