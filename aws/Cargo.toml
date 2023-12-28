@@ -1,0 +1,18 @@
+[package]
+name = "aws"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+aws-config = { version = "1.1.1", features = ["behabehavior-version-latest"] }
+aws-sdk-dynamodb = "1.9.0"
+tokio = { version = "1", features = ["full"] }
+lambda_runtime = "0.9.0"
+serde = "1.0.193"
+serde_json = "1.0.108"
+serde_derive = "1.0.193"
+log = "0.4.20"
+simple_logger = "4.3.0"
+uuid = { version = "1.6.1", features = ["v4"] }
