@@ -1,0 +1,18 @@
+[package]
+name = "hashing"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = { version = "0.5.0-rc.2", features = ["json"] }
+chrono = { version = "0.4.31", features = ["serde"] }
+dotenv = "0.15.0"
+serde = { version = "1.0.193", features = ["derive"] }
+serde_json = "1.0.108"
+sqlx = { version = "0.7.3", features = ["postgres", "runtime-async-std-native-tls", "chrono"] }
+argonautica = "0.2.0"
+hmac = "0.12.1"
+jwt = "0.16.0"
+sha2 = "0.10.8"
